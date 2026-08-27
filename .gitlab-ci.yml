@@ -7,7 +7,12 @@ variables:
   npm_config_cache: '$CI_PROJECT_DIR/.npm'
 
 default:
-  image: cypress/browsers:22.16.0-chrome131-ff133-edge131
+  # cypress/browsers retags frequently (new Chrome/Firefox/Edge builds land
+  # roughly weekly); this pins to a specific published build rather than
+  # `:latest` so CI browser versions don't drift silently between runs.
+  # Check available tags at https://hub.docker.com/r/cypress/browsers/tags
+  # before bumping.
+  image: cypress/browsers:24.20.0
   cache:
     key:
       files:
