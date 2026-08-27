@@ -1,0 +1,79 @@
+stages:
+  - lint
+  - test
+
+variables:
+  CYPRESS_ENV: prod
+  npm_config_cache: '$CI_PROJECT_DIR/.npm'
+
+default:
+  image: cypress/browsers:22.16.0-chrome131-ff133-edge131
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm
+      - node_modules
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+    - npm run format:check
+
+api-tests:
+  stage: test
+  needs: [lint]
+  script:
+    - npx cypress run --browser electron --spec "cypress/e2e/api/**/*.cy.js"
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - cypress/reports
+    reports:
+      # GitLab renders these as native pipeline test results when produced
+      # in JUnit format; mochawesome-report-generator's JSON is kept as a
+      # browsable artifact alongside it for the human-readable HTML view.
+      junit: cypress/reports/junit/*.xml
+
+.ui-tests-base:
+  stage: test
+  needs: [lint]
+  parallel:
+    matrix:
+      - CY_GROUP: ['1', '2']
+  script:
+    - >
+      ALL_SPECS=$(find cypress/e2e/ui -name '*.cy.js' | sort);
+      if [ "$CY_GROUP" = "1" ]; then
+        SPECS=$(echo "$ALL_SPECS" | awk 'NR % 2 == 1' | paste -sd, -);
+      else
+        SPECS=$(echo "$ALL_SPECS" | awk 'NR % 2 == 0' | paste -sd, -);
+      fi;
+      npx cypress run --browser "$CY_BROWSER" --spec "$SPECS"
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - cypress/reports
+      - cypress/screenshots
+      - cypress/videos
+
+ui-tests:chrome:
+  extends: .ui-tests-base
+  variables:
+    CY_BROWSER: chrome
+
+ui-tests:firefox:
+  extends: .ui-tests-base
+  variables:
+    CY_BROWSER: firefox
+
+ui-tests:edge:
+  extends: .ui-tests-base
+  variables:
+    CY_BROWSER: edge

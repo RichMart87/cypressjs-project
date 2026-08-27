@@ -1,0 +1,44 @@
+{
+  "name": "automationexercise-cypress-framework",
+  "version": "1.0.0",
+  "description": "Cypress JavaScript test automation framework for automationexercise.com (UI test cases + API test suite)",
+  "private": true,
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:open:qa": "cross-env CYPRESS_ENV=qa cypress open",
+    "test": "cypress run",
+    "test:ui": "cypress run --spec \"cypress/e2e/ui/**/*.cy.js\"",
+    "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox",
+    "test:edge": "cypress run --browser edge",
+    "test:headed": "cypress run --headed --browser chrome",
+    "test:smoke": "cypress run --env grep=@smoke",
+    "test:regression": "cypress run --env grep=@regression",
+    "report:clean": "rimraf cypress/reports cypress/screenshots cypress/videos cypress/downloads",
+    "lint": "eslint cypress.config.js cypress",
+    "lint:fix": "eslint cypress.config.js cypress --fix",
+    "format": "prettier --write \"cypress/**/*.js\" \"*.js\"",
+    "format:check": "prettier --check \"cypress/**/*.js\" \"*.js\"",
+    "verify": "npm run lint && npm run format:check"
+  },
+  "devDependencies": {
+    "@cypress/grep": "^6.0.3",
+    "@faker-js/faker": "^10.6.0",
+    "cross-env": "^10.1.0",
+    "cypress": "^15.21.1",
+    "cypress-mochawesome-reporter": "^5.0.0",
+    "cypress-multi-reporters": "^2.0.5",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-cypress": "^7.0.1",
+    "mocha-junit-reporter": "^2.2.1",
+    "prettier": "^3.9.6",
+    "rimraf": "^6.0.1"
+  }
+}

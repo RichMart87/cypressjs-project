@@ -1,0 +1,17 @@
+{
+  "reporterEnabled": "cypress-mochawesome-reporter, mocha-junit-reporter",
+  "cypressMochawesomeReporterReporterOptions": {
+    "reportDir": "cypress/reports/mochawesome",
+    "charts": true,
+    "overwrite": false,
+    "html": false,
+    "json": true,
+    "embeddedScreenshots": true,
+    "inlineAssets": true,
+    "reportPageTitle": "AutomationExercise Cypress Report"
+  },
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "cypress/reports/junit/results-[hash].xml",
+    "toConsole": false
+  }
+}
